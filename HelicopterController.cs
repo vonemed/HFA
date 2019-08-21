@@ -12,6 +12,15 @@ public class HelicopterController : MonoBehaviour
 
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.CompareTag("Case"))  // If heli is colliding with a case
+        {
+            Destroy(other.gameObject);
+            Debug.Log("You collected the intle"); // Debug purposes
+            // Update the mission screen
+        }
+    }
     // Update is called once per frame
     void Update()
     {
