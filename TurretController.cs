@@ -23,6 +23,7 @@ public class TurretController : MonoBehaviour
     [Header("Missile Attributes")] // A Header which displays in the unity editor
 
     public GameObject missilePrefab; // A missile prefab to instantiate when shooting
+    public Transform launchingPoint; // A point (empty game object) from which the missile will be instantiated;
     public float fireRate = 1f; // The fire rate of missile
     private float restBetweenShots = 0f; // The cooldown between shots
     public bool Firing; // Flag
@@ -48,7 +49,7 @@ public class TurretController : MonoBehaviour
         if(Firing)
         {
             Debug.Log("Rocket is on the move");
-            missile.Translate(0, 1.0f * Time.deltaTime, 1.0f * Time.deltaTime);
+            missileLaunch();
         }
 
         if (target != null)
@@ -92,5 +93,10 @@ public class TurretController : MonoBehaviour
         return GetAngleBetween(forward, (targetPos - turretPos).normalized); // Angle between forward vector and vector to the target
     }
 
+    void missileLaunch()
+    {
+        Instantiate(missilePrefab, launchingPoint.position, missilePrefab.transform.rotation);
+        missilePrefab.transform.Rotate(0, -90, 0); // Rotate the missile upon instatiation
+    }
 
 }
