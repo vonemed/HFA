@@ -26,7 +26,6 @@ public class TurretController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player_heli"))
         {
-            missile.LookAt(other.transform);
             Firing = true;
             Debug.Log("FIRING");
         }
@@ -36,10 +35,6 @@ public class TurretController : MonoBehaviour
     {
         Firing = false;
         Debug.Log("Stop FIRING");
-    }
-    private void Awake()
-    {
-        
     }
 
     // Update is called once per frame
