@@ -16,8 +16,7 @@ public class TurretController : MonoBehaviour
     private Transform target;
 
     public bool xPointingActive;
-   
-    public Collider heli;
+ 
     private SphereCollider rad;
 
     [Header("Missile Attributes")] // A Header which displays in the unity editor
@@ -46,11 +45,15 @@ public class TurretController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Firing)
+
+        if(restBetweenShots <= 0f && Firing)
         {
-            Debug.Log("Rocket is on the move");
             missileLaunch();
+            // Missiles per 3 seconds
+            restBetweenShots = 3f / fireRate; // If fire rate is 2, that means turret need to fire 2 missiles per second
         }
+
+        restBetweenShots -= Time.deltaTime;
 
         if (target != null)
         {
@@ -95,8 +98,14 @@ public class TurretController : MonoBehaviour
 
     void missileLaunch()
     {
-        Instantiate(missilePrefab, launchingPoint.position, missilePrefab.transform.rotation);
-        missilePrefab.transform.Rotate(0, -90, 0); // Rotate the missile upon instatiation
-    }
+        // Reference to a missile that instantiated, [Object casting]
+        GameObject tempMissile = (GameObject)Instantiate(missilePrefab, launchingPoint.position, missilePrefab.transform.rotation);
+        TurretMissile missile = tempMissile.GetComponent<TurretMissile>();
 
+        if (missile != null) // If the component was found succesful
+        {
+            missile.TargetToFollow(target); // Pass the target transform
+        }
+        //missilePrefab.transform.Rotate(0, -90, 0); // Rotate the missile upon instatiation
+    }
 }
