@@ -17,8 +17,6 @@ public class TurretController : MonoBehaviour
 
     public bool xPointingActive;
  
-    private SphereCollider rad;
-
     [Header("Missile Attributes")] // A Header which displays in the unity editor
 
     public GameObject missilePrefab; // A missile prefab to instantiate when shooting
@@ -45,7 +43,6 @@ public class TurretController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if(restBetweenShots <= 0f && Firing)
         {
             missileLaunch();
