@@ -17,20 +17,37 @@ public class TurretController : MonoBehaviour
     public bool xPointingActive;
 
     public Transform missile;
+    public Collider heli;
     public bool Firing;
-    private void OnTriggerEnter(Collider other)
+
+    private SphereCollider rad;
+
+    private void OnTriggerEnter(Collider other) // When heli is inside of turret sphere collider
     {
-        if(other.gameObject.CompareTag("Player_heli"))
+        if (other.gameObject.CompareTag("Player_heli"))
         {
             missile.LookAt(other.transform);
             Firing = true;
+            Debug.Log("FIRING");
         }
     }
+
+    private void OnTriggerExit(Collider other) // When heli is outside of turret sphere collider
+    {
+        Firing = false;
+        Debug.Log("Stop FIRING");
+    }
+    private void Awake()
+    {
+        
+    }
+
     // Update is called once per frame
     void Update()
     {
         if(Firing)
         {
+            Debug.Log("Rocket is on the move");
             missile.Translate(0, 1.0f * Time.deltaTime, 1.0f * Time.deltaTime);
         }
         if (target != null)
