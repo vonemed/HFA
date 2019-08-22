@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class TurretController : MonoBehaviour
 {
@@ -15,12 +16,16 @@ public class TurretController : MonoBehaviour
     private Transform target;
 
     public bool xPointingActive;
-
-    public Transform missile;
+   
     public Collider heli;
-    public bool Firing;
-
     private SphereCollider rad;
+
+    [Header("Missile Attributes")] // A Header which displays in the unity editor
+
+    public GameObject missilePrefab; // A missile prefab to instantiate when shooting
+    public float fireRate = 1f; // The fire rate of missile
+    private float restBetweenShots = 0f; // The cooldown between shots
+    public bool Firing; // Flag
 
     private void OnTriggerEnter(Collider other) // When heli is inside of turret sphere collider
     {
@@ -45,6 +50,7 @@ public class TurretController : MonoBehaviour
             Debug.Log("Rocket is on the move");
             missile.Translate(0, 1.0f * Time.deltaTime, 1.0f * Time.deltaTime);
         }
+
         if (target != null)
         {
             float timeDelta = Time.deltaTime; // Smooth aming.
