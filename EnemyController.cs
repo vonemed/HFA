@@ -1,14 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
-    void Start()
-    {
-
-    }
     // Destruction of itself
     void OnTriggerEnter(Collider other)
     {
