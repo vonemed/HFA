@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// For UI elements
+using UnityEngine.UI;
+
 public class EnemySpawner : MonoBehaviour {
 
     // Prefabs for enemies
@@ -12,6 +15,8 @@ public class EnemySpawner : MonoBehaviour {
     [SerializeField]
     private int enemyCount;
 
+    public RawImage secondStar;
+
     // Use this for initialization
     void Start ()
     {
@@ -21,9 +26,10 @@ public class EnemySpawner : MonoBehaviour {
 
     public void Update()
     {
-       if(enemyCount == 0)
+       if(enemyCount == 0) // If the whole convoy is dead
         {
             Debug.Log("All enemies are destroyed");
+            secondStar.enabled = true; // Display completed mission
         }
     }
 
@@ -31,7 +37,6 @@ public class EnemySpawner : MonoBehaviour {
     public void enemyDestroyed()
     {
         enemyCount--;
-        Debug.Log("TANK IS DESTROYED!!!!");
     }
 
     IEnumerator SpawnEnemies() // Spawning enemies
