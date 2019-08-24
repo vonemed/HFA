@@ -23,6 +23,7 @@ public class HelicopterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         Vector3 tilt = Input.acceleration;
         if (isFlat)
         {

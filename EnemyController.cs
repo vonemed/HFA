@@ -4,12 +4,21 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    public GameObject spawner; 
+
+    private void Start()
+    {
+        spawner = GameObject.FindGameObjectWithTag("EnemySpawner"); // Assigning an existing game object to an instance of an enemy
+    }
+
     // Destruction of itself
     void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Missile")) // Destroying enemy vehicle if it collides with missile
         {
-            Destroy(gameObject); 
+            
+            Destroy(gameObject);
+            spawner.GetComponent<EnemySpawner>().enemyDestroyed(); // After destruction, reduce the list of enemies remaining
 
         } else if (other.gameObject.CompareTag("Case")) 
         {
