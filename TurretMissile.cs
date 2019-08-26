@@ -7,6 +7,15 @@ public class TurretMissile : MonoBehaviour
 
     public float speed = 5f; // The speed of missile.
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Player_heli"))
+        {
+            Destroy(other);
+            GameObject tempEff = (GameObject)Instantiate(explosionEff, transform.position, transform.rotation);
+            Destroy(tempEff, 2f); // Destroying explosion effect after 2 seconds.
+        }
+    }
     public void TargetToFollow (Transform _target)
     {
         target = _target;
@@ -26,7 +35,7 @@ public class TurretMissile : MonoBehaviour
 
         if(dir.magnitude <= movPerFrame) // To prevent the missile from overshooting, and getting past the target.
         {
-            Debug.Log("HIT");
+            
             Destroy(gameObject);
 
             // Instantiating explosion effect
