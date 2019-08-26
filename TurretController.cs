@@ -21,23 +21,23 @@ public class TurretController : MonoBehaviour
 
     public GameObject missilePrefab; // A missile prefab to instantiate when shooting
     public Transform launchingPoint; // A point (empty game object) from which the missile will be instantiated;
+
     public float fireRate = 1f; // The fire rate of missile
     private float restBetweenShots = 0f; // The cooldown between shots
     public bool Firing; // Flag
 
     private void OnTriggerEnter(Collider other) // When heli is inside of turret sphere collider
     {
-        if (other.gameObject.CompareTag("Player_heli"))
+        if (other.CompareTag("Player_heli"))
         {
             Firing = true;
-            Debug.Log("FIRING");
+            //gameObject.GetComponent<SphereCollider>().enabled = false;
         }
     }
 
     private void OnTriggerExit(Collider other) // When heli is outside of turret sphere collider
     {
         Firing = false;
-        Debug.Log("Stop FIRING");
     }
 
     // Update is called once per frame

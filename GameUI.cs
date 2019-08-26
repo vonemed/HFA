@@ -5,21 +5,17 @@ using UnityEngine.UI;
 
 public class GameUI : MonoBehaviour
 {
-
     public Scrollbar _thrust;
     public Button _fireButton;
     public GameObject _heli;
-    public GameObject _missile;
-    public Transform _spawnPos;
-
+   
     public float deltaTime = 0.0f;
     public Text _fpcCounter;
 
     private float fps = 0.0f;
     void Start ()
     {
-        Button _btn2 = _fireButton.GetComponent<Button>();
-        _btn2.onClick.AddListener(_firing);
+
     }
 
     void Update()
@@ -61,15 +57,4 @@ public class GameUI : MonoBehaviour
            // _missile.AddForce(0, -8 * Time.deltaTime, 5 * Time.deltaTime);
         }*/
     }
-
-    void _firing() // Function that instantiates a missile at spawning point.
-    {
-          _missile.transform.position = _spawnPos.position; // Assign missile a new position in front of the heli.
-
-          _missile.AddComponent<Rigidbody>(); // Add rigidbody to missile to make it fall.
-    
-          //_missileInst = Instantiate(_missileprefab, _spawnPos.position, _spawnPos.rotation) as Rigidbody;
-    }
-
-
 }
