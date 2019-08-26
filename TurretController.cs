@@ -42,51 +42,55 @@ public class TurretController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        dist = Vector3.Distance(target.position, transform.position); // Keep track of distance between turret and player_heli
+        if (target != null)
+        {
+            dist = Vector3.Distance(target.position, transform.position); // Keep track of distance between turret and player_heli
 
-        if (dist < 15)
-        {
-            Firing = true;
-        }
-        else
-        {
-            Firing = false;
-        }
-
-        if (isTurretDestroyed != null) // If the turret was already destroyed
-        {
-            if (restBetweenShots <= 0f && Firing)
+            if (dist < 15)
             {
-                missileLaunch();
-                // Missiles per 3 seconds
-                restBetweenShots = 3f / fireRate; // If fire rate is 2, that means turret need to fire 2 missiles per second
+                Firing = true;
+            }
+            else
+            {
+                Firing = false;
             }
 
-            restBetweenShots -= Time.deltaTime;
-
-            if (target != null)
+            if (isTurretDestroyed != null) // If the turret was already destroyed
             {
-                float timeDelta = Time.deltaTime; // Smooth aming.
-                yAxisRot.SetTarget(target);
-                yAxisRot.Update(timeDelta, AimingAngle());
+                if (restBetweenShots <= 0f && Firing)
+                {
+                    missileLaunch();
+                    // Missiles per 3 seconds
+                    restBetweenShots = 3f / fireRate; // If fire rate is 2, that means turret need to fire 2 missiles per second
+                }
+
+                restBetweenShots -= Time.deltaTime;
+
+                if (target != null)
+                {
+                    float timeDelta = Time.deltaTime; // Smooth aming.
+                    yAxisRot.SetTarget(target);
+                    yAxisRot.Update(timeDelta, AimingAngle());
 
 
-                xPointingActive = yAxisRot.getCurrentAbsAngle <= yAngleToTargetToStartXRotation; // [True if
-                if (xPointingActive)
-                {
-                    float angle = Quaternion.LookRotation((target.position - xAxisRot.rotationTransform.position).normalized, xAxisRot.rotationTransform.up).eulerAngles.x;
-                    angle = FixNegativeAngle(angle);
-                    xAxisRot.rotationTransform.localRotation = Quaternion.Lerp(xAxisRot.rotationTransform.localRotation, Quaternion.Euler(xAxisRot.rotationMask * angle), xAxisRot.speed * timeDelta);
+                    xPointingActive = yAxisRot.getCurrentAbsAngle <= yAngleToTargetToStartXRotation; // [True if
+                    if (xPointingActive)
+                    {
+                        float angle = Quaternion.LookRotation((target.position - xAxisRot.rotationTransform.position).normalized, xAxisRot.rotationTransform.up).eulerAngles.x;
+                        angle = FixNegativeAngle(angle);
+                        xAxisRot.rotationTransform.localRotation = Quaternion.Lerp(xAxisRot.rotationTransform.localRotation, Quaternion.Euler(xAxisRot.rotationMask * angle), xAxisRot.speed * timeDelta);
+                    }
+                    else
+                    {
+                        xAxisRot.rotationTransform.localRotation = Quaternion.Lerp(xAxisRot.rotationTransform.localRotation, Quaternion.identity, xAxisRot.speed * timeDelta);
+                    }
                 }
-                else
-                {
-                    xAxisRot.rotationTransform.localRotation = Quaternion.Lerp(xAxisRot.rotationTransform.localRotation, Quaternion.identity, xAxisRot.speed * timeDelta);
-                }
+
             }
-
-        } else
-        {
-            thirdStar.enabled = true; // Add third star when turret is destroyed
+            else
+            {
+                thirdStar.enabled = true; // Add third star when turret is destroyed
+            }
         }
     }
     private float FixNegativeAngle(float angle)

@@ -1,16 +1,25 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CameraFollow : MonoBehaviour
 {
+    public Canvas gameOver;
 
-    public Transform _heli;
+    public Transform heli;
     public Vector3 offset;
 
     // Update is called once per frame
     void FixedUpdate ()
     {
-        transform.position =  new Vector3(_heli.position.x, offset.y, offset.z);
+        if(heli == null)
+        {
+            gameOver.enabled = true;
+
+        } else
+        {
+            transform.position = new Vector3(heli.position.x, offset.y, offset.z);
+        }
     }
 }

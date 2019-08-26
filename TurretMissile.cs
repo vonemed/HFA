@@ -11,7 +11,7 @@ public class TurretMissile : MonoBehaviour
     {
         if(other.CompareTag("Player_heli"))
         {
-            Destroy(other);
+            Destroy(other.gameObject);
             GameObject tempEff = (GameObject)Instantiate(explosionEff, transform.position, transform.rotation);
             Destroy(tempEff, 2f); // Destroying explosion effect after 2 seconds.
         }
