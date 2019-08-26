@@ -30,29 +30,29 @@ public class TurretController : MonoBehaviour
     [Header("UI")]
     public RawImage thirdStar;
     // Flag to indicate if the turret was destroyed
-    private GameObject isTurretDestroyed; 
+    private GameObject isTurretDestroyed;
 
+    [SerializeField]
+    private float dist;
     private void Awake()
     {
         isTurretDestroyed = GameObject.FindGameObjectWithTag("Turret");
-    }
-    private void OnTriggerEnter(Collider other) // When heli is inside of turret sphere collider
-    {
-        if (other.CompareTag("Player_heli"))
-        {
-            Firing = true;
-            //gameObject.GetComponent<SphereCollider>().enabled = false;
-        }
-    }
-
-    private void OnTriggerExit(Collider other) // When heli is outside of turret sphere collider
-    {
-        Firing = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        dist = Vector3.Distance(target.position, transform.position); // Keep track of distance between turret and player_heli
+
+        if (dist < 15)
+        {
+            Firing = true;
+        }
+        else
+        {
+            Firing = false;
+        }
+
         if (isTurretDestroyed != null) // If the turret was already destroyed
         {
             if (restBetweenShots <= 0f && Firing)
