@@ -34,18 +34,22 @@ public class HeliMissile : MonoBehaviour
         if(other.CompareTag("Tank")) // If the missile hits tank
         {
             count += 200; // Add 200 points
-            SetCountText(); // Refresh score on screen
+            SetCountText(); // Refresh score on the screen
 
         } else if (other.CompareTag("Truck")) // If the missile hits truck
         {
             count += 100; // Add 100 points
-            SetCountText(); // Refresh score on screen
-        } 
+            SetCountText(); // Refresh score on the screen
+
+        } else if (other.CompareTag("Turret"))
+        {
+            count += 400; // Add 400 points
+            SetCountText(); // Refresh score on the screen
+        }
 
        _explosionInst = Instantiate(_explosion, transform.position, transform.rotation); // Create a particle explosion
-        Destroy(gameObject);
-        /*Destroy(gameObject.GetComponent<Rigidbody>()); // Remove rigidbody from missile, so it won't fall underground.
-        gameObject.transform.position = new Vector3(-20, 2, 1); // Set it to the default spawn position*/
+        Destroy(gameObject); // Destroy missile
+
     }
 
     private void Update()

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class EnemySpawner : MonoBehaviour {
 
+    [Header("Prefabs for enemies")]
     // Prefabs for enemies
     public GameObject tankPrefab;
     public GameObject truckPrefab;
@@ -15,6 +16,7 @@ public class EnemySpawner : MonoBehaviour {
     [SerializeField]
     private int enemyCount;
 
+    [Header("UI")]
     public RawImage secondStar;
 
     // Use this for initialization

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class TurretController : MonoBehaviour
@@ -26,6 +27,15 @@ public class TurretController : MonoBehaviour
     private float restBetweenShots = 0f; // The cooldown between shots
     public bool Firing; // Flag
 
+    [Header("UI")]
+    public RawImage thirdStar;
+    // Flag to indicate if the turret was destroyed
+    private GameObject isTurretDestroyed; 
+
+    private void Awake()
+    {
+        isTurretDestroyed = GameObject.FindGameObjectWithTag("Turret");
+    }
     private void OnTriggerEnter(Collider other) // When heli is inside of turret sphere collider
     {
         if (other.CompareTag("Player_heli"))
@@ -43,33 +53,40 @@ public class TurretController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(restBetweenShots <= 0f && Firing)
+        if (isTurretDestroyed != null) // If the turret was already destroyed
         {
-            missileLaunch();
-            // Missiles per 3 seconds
-            restBetweenShots = 3f / fireRate; // If fire rate is 2, that means turret need to fire 2 missiles per second
-        }
+            if (restBetweenShots <= 0f && Firing)
+            {
+                missileLaunch();
+                // Missiles per 3 seconds
+                restBetweenShots = 3f / fireRate; // If fire rate is 2, that means turret need to fire 2 missiles per second
+            }
 
-        restBetweenShots -= Time.deltaTime;
+            restBetweenShots -= Time.deltaTime;
 
-        if (target != null)
+            if (target != null)
+            {
+                float timeDelta = Time.deltaTime; // Smooth aming.
+                yAxisRot.SetTarget(target);
+                yAxisRot.Update(timeDelta, AimingAngle());
+
+
+                xPointingActive = yAxisRot.getCurrentAbsAngle <= yAngleToTargetToStartXRotation; // [True if
+                if (xPointingActive)
+                {
+                    float angle = Quaternion.LookRotation((target.position - xAxisRot.rotationTransform.position).normalized, xAxisRot.rotationTransform.up).eulerAngles.x;
+                    angle = FixNegativeAngle(angle);
+                    xAxisRot.rotationTransform.localRotation = Quaternion.Lerp(xAxisRot.rotationTransform.localRotation, Quaternion.Euler(xAxisRot.rotationMask * angle), xAxisRot.speed * timeDelta);
+                }
+                else
+                {
+                    xAxisRot.rotationTransform.localRotation = Quaternion.Lerp(xAxisRot.rotationTransform.localRotation, Quaternion.identity, xAxisRot.speed * timeDelta);
+                }
+            }
+
+        } else
         {
-            float timeDelta = Time.deltaTime; // Smooth aming.
-            yAxisRot.SetTarget(target);
-            yAxisRot.Update(timeDelta, AimingAngle());
-
-
-            xPointingActive = yAxisRot.getCurrentAbsAngle <= yAngleToTargetToStartXRotation; // [True if
-            if (xPointingActive)
-            {
-                float angle = Quaternion.LookRotation((target.position - xAxisRot.rotationTransform.position).normalized, xAxisRot.rotationTransform.up).eulerAngles.x;
-                angle = FixNegativeAngle(angle);
-                xAxisRot.rotationTransform.localRotation = Quaternion.Lerp(xAxisRot.rotationTransform.localRotation, Quaternion.Euler(xAxisRot.rotationMask * angle), xAxisRot.speed * timeDelta);
-            }
-            else
-            {
-                xAxisRot.rotationTransform.localRotation = Quaternion.Lerp(xAxisRot.rotationTransform.localRotation, Quaternion.identity, xAxisRot.speed * timeDelta);
-            }
+            thirdStar.enabled = true; // Add third star when turret is destroyed
         }
     }
     private float FixNegativeAngle(float angle)
@@ -95,6 +112,7 @@ public class TurretController : MonoBehaviour
 
     void missileLaunch()
     {
+        
         // Reference to a missile that instantiated, [Object casting]
         GameObject tempMissile = (GameObject)Instantiate(missilePrefab, launchingPoint.position, missilePrefab.transform.rotation);
         TurretMissile missile = tempMissile.GetComponent<TurretMissile>();
