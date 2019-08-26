@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
-    public GameObject spawner; 
+    // Spawn point
+    public GameObject spawner;
 
     private void Start()
     {
@@ -14,16 +16,15 @@ public class EnemyController : MonoBehaviour
     // Destruction of itself
     void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Missile")) // Destroying enemy vehicle if it collides with missile
+        if(other.CompareTag("Missile")) // Destroying enemy vehicle if it collides with missile
         {
-            
             Destroy(gameObject);
             spawner.GetComponent<EnemySpawner>().enemyDestroyed(); // After destruction, reduce the list of enemies remaining
 
-        } else if (other.gameObject.CompareTag("Case")) 
+        } else if (other.CompareTag("Case")) 
         {
             Debug.Log("Enemy has captured the case");
-            Destroy(other.gameObject); // Destroying "Case"
+            Destroy(other); // Destroying "Case"
         }
 
     }
