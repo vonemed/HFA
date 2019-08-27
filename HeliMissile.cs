@@ -41,11 +41,11 @@ public class HeliMissile : MonoBehaviour
             count += 100; // Add 100 points
             SetCountText(); // Refresh score on the screen
 
-        } else if (other.CompareTag("Turret"))
+        } else if (other.CompareTag("Turret")) // If the missile hits turret
         {
             count += 400; // Add 400 points
             SetCountText(); // Refresh score on the screen
-        }
+        } 
 
        _explosionInst = Instantiate(_explosion, transform.position, transform.rotation); // Create a particle explosion
         Destroy(gameObject); // Destroy missile

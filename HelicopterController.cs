@@ -91,6 +91,10 @@ public class HelicopterController : MonoBehaviour
 
     public void InstMissile()
     {
+        if(transform.position.y < 1.2f) // Destroy heli, if missile was launched too close to the ground
+        {
+            Destroy(gameObject);
+        }
         if (restBetweenShots <= 0)
         {
             GameObject missileInst = (GameObject)Instantiate(missilePrefab, _spawnPos.position, _spawnPos.rotation);
