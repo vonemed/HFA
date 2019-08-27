@@ -19,6 +19,8 @@ public class HelicopterController : MonoBehaviour
     // UI
     public Button fireButton; // A button to instantiate a missile 
     public RawImage firstStar; // The image of first star to indicate the completion of first mission.
+    public Canvas missionCompleted; // A canvas that will be enabled when player deliver case to the base
+    public Canvas gameUI;
   
     private void OnTriggerEnter(Collider other)
     {
@@ -30,7 +32,14 @@ public class HelicopterController : MonoBehaviour
             // Update the mission screen
             firstStar.enabled = true;
 
-        } 
+        } else if (other.CompareTag("Base"))
+        {
+            if(firstStar.enabled == true) // If mission is completed disable main game ui and enable "mission complete" panel
+            {
+                missionCompleted.enabled = true;
+                gameUI.enabled = false;
+            }
+        }
     }
 
     private void Start()
