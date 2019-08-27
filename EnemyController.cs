@@ -24,7 +24,11 @@ public class EnemyController : MonoBehaviour
         } else if (other.CompareTag("Case")) // Collect the case 
         {
             Debug.Log("Enemy has captured the case");
-            Destroy(other); // Destroying "Case"
+            Destroy(other.gameObject); // Destroying "Case"
+
+        } else if (other.CompareTag("Player_heli")) // Destroy heli if it touches any enemy vehicles
+        {
+            Destroy(other.gameObject);
         }
 
     }
