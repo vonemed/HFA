@@ -60,7 +60,7 @@ public class TurretController : MonoBehaviour
                 if (restBetweenShots <= 0f && Firing)
                 {
                     missileLaunch();
-                    // Missiles per 3 seconds
+                    // Missile per 3 seconds
                     restBetweenShots = 3f / fireRate; // If fire rate is 2, that means turret need to fire 2 missiles per second
                 }
 

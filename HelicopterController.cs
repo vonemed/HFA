@@ -5,19 +5,22 @@ using UnityEngine.UI;
 
 public class HelicopterController : MonoBehaviour
 {
-    public bool isFlat = true;
+    private float speed = 9f;
+
     // Missile prefab
     [Header("Missile parameters")]
     public GameObject missilePrefab;
     private GameObject missileInst;
-
     public Transform _spawnPos; // Spawn position of the missile 
     public Transform terrainTarget; // The direction towards the ground for missile to follow
 
-    
-    [Header("UI")]
+    public float fireRate = 1f;
+    private float restBetweenShots = 0f;
+
     // UI
+    [Header("UI")]
     public Button fireButton; // A button to instantiate a missile 
+    public Scrollbar scrlBar; // A scrollbar to control helicopters height
     public RawImage firstStar; // The image of first star to indicate the completion of first mission.
     public Canvas missionCompleted; // A canvas that will be enabled when player deliver case to the base
     public Canvas gameUI;
@@ -26,7 +29,7 @@ public class HelicopterController : MonoBehaviour
     {
         if(other.CompareTag("Case"))  // If heli is colliding with a case
         {
-            Destroy(other);
+            Destroy(other.gameObject);
             Debug.Log("You collected the intel"); // Debug purposes
 
             // Update the mission screen
@@ -51,22 +54,26 @@ public class HelicopterController : MonoBehaviour
     void Update()
     {
         Vector3 tilt = Input.acceleration;
-        if (isFlat)
-        {
-            //tilt = Quaternion.Euler(90, 0, 0) * tilt;
-        }
+        Debug.Log(tilt);
+        
+        transform.Translate(0, 0, tilt.x * (speed * Time.deltaTime), Space.Self);
 
-        transform.Translate(0, 0, tilt.x * Time.deltaTime * 9);
+        restBetweenShots -= Time.deltaTime; // Cooldown reset
     }
 
     public void InstMissile()
     {
-        GameObject missileInst = (GameObject)Instantiate(missilePrefab, _spawnPos.position, _spawnPos.rotation);
-        HeliMissile missile = missileInst.GetComponent<HeliMissile>();
-
-        if(missile != null)
+        if (restBetweenShots <= 0)
         {
-            missile.SetTarget(terrainTarget);
+            GameObject missileInst = (GameObject)Instantiate(missilePrefab, _spawnPos.position, _spawnPos.rotation);
+            HeliMissile missile = missileInst.GetComponent<HeliMissile>();
+
+            if (missile != null)
+            {
+                missile.SetTarget(terrainTarget);
+            }
+
+            restBetweenShots = 2f / fireRate; // Cooldown set
         }
     }
 }

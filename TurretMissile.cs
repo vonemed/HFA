@@ -58,7 +58,7 @@ public class TurretMissile : MonoBehaviour
     IEnumerator DestroyAfterTime() // Destroy missile after some time
     {
         // Wait for 5 seconds, then destroy missile and instantiate an explosion
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(3);
         Destroy(gameObject);
         GameObject tempEff = (GameObject)Instantiate(explosionEff, transform.position, transform.rotation);
         Destroy(tempEff, 2f); // Destroying explosion effect after 2 seconds.

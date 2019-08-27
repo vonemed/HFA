@@ -11,16 +11,16 @@ public class CameraFollow : MonoBehaviour
     public Transform heli;
     public Vector3 offset;
 
-    // Update is called once per frame
-    void FixedUpdate ()
+    private void Update()
     {
         // If helis is destroyed enable game over panel
-        if(heli == null)
+        if (heli == null)
         {
             gameOver.enabled = true;
             gameUI.enabled = false; // Disable main game UI
 
-        } else
+        }
+        else
         {
             transform.position = new Vector3(heli.position.x, offset.y, offset.z);
         }

@@ -21,7 +21,7 @@ public class EnemyController : MonoBehaviour
             Destroy(gameObject);
             spawner.GetComponent<EnemySpawner>().enemyDestroyed(); // After destruction, reduce the list of enemies remaining
 
-        } else if (other.CompareTag("Case")) 
+        } else if (other.CompareTag("Case")) // Collect the case 
         {
             Debug.Log("Enemy has captured the case");
             Destroy(other); // Destroying "Case"
