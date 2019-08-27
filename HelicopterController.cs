@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 public class HelicopterController : MonoBehaviour
 {
-    private float speed = 9f;
+    // Helicopter parameters
+    [Header("Helicopter parameters")]
+    public float Xspeed;
+    public float Yspeed;
 
     // Missile prefab
     [Header("Missile parameters")]
@@ -53,12 +56,37 @@ public class HelicopterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 tilt = Input.acceleration;
-        Debug.Log(tilt);
-        
-        transform.Translate(0, 0, tilt.x * (speed * Time.deltaTime), Space.Self);
-
         restBetweenShots -= Time.deltaTime; // Cooldown reset
+
+        // Helicopter x axis movement
+        Vector3 tilt = Input.acceleration;
+
+        transform.Translate(0, 0, tilt.x * (Xspeed * Time.deltaTime), Space.Self);
+
+        // Helicopter y axis movement
+        // If scrollbar handle is above half, the heli goes up and if handle is less than half
+        if(scrlBar.value > 0.5f) // Up
+        {
+            if(scrlBar.value > 0.8f) // To speed up lifting speed
+            {
+                transform.Translate(0, Yspeed * (0.5f * Time.deltaTime), 0);
+            }
+
+            transform.Translate(0, Yspeed * Time.deltaTime, 0);
+
+        } else if (scrlBar.value < 0.5f) // Down
+        {
+            if(scrlBar.value < 0.2f) 
+            { 
+                transform.Translate(0, Yspeed * (-0.5f * Time.deltaTime), 0);
+            }
+
+            transform.Translate(0, Yspeed * (-Time.deltaTime), 0);
+
+        } else if (scrlBar.value == 0.5f)
+        {
+            transform.Translate(0, 0, 0);
+        }
     }
 
     public void InstMissile()
