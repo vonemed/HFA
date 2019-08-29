@@ -57,11 +57,20 @@ public class HelicopterController : MonoBehaviour
     void Update()
     {
         restBetweenShots -= Time.deltaTime; // Cooldown reset
-
+        
         // Helicopter x axis movement
         Vector3 tilt = Input.acceleration;
 
         transform.Translate(0, 0, tilt.x * (Xspeed * Time.deltaTime), Space.Self);
+
+        if(Input.GetKey(KeyCode.D))
+        {
+            transform.Translate(0, 0, 4f * Time.deltaTime);
+
+        } else if (Input.GetKey(KeyCode.A))
+        {
+            transform.Translate(0, 0, -4f * Time.deltaTime);
+        }
 
         // Helicopter y axis movement
         // If scrollbar handle is above half, the heli goes up and if handle is less than half

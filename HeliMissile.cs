@@ -6,11 +6,11 @@ using UnityEngine.UI;
 public class HeliMissile : MonoBehaviour
 {
     // Missile parameters
-    private float speed = 5f;
+    private float speed = 4f;
 
     // Explosion prefab
     public GameObject _explosion;
-    public GameObject _explosionInst;
+    private GameObject _explosionInst;
 
     // Target in front of heli
     private Transform terrainTarget;
@@ -49,14 +49,18 @@ public class HeliMissile : MonoBehaviour
 
        _explosionInst = Instantiate(_explosion, transform.position, transform.rotation); // Create a particle explosion
         Destroy(gameObject); // Destroy missile
+        Destroy(_explosionInst, 2f);
 
     }
 
     private void Update()
     {
-        float movPerFrame = speed * Time.deltaTime; // The speed of missile
-        Vector3 dir = terrainTarget.position - transform.position; // The direction of missile
-        transform.Translate(dir * movPerFrame, Space.World); // The actual movement
+        if (gameObject != null)
+        {
+            float movPerFrame = speed * Time.deltaTime; // The speed of missile
+            Vector3 dir = terrainTarget.position - transform.position; // The direction of missile
+            transform.Translate(dir * movPerFrame, Space.World); // The actual movement
+        }
     }
 
     public void SetTarget(Transform _target)
