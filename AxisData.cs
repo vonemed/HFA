@@ -27,7 +27,6 @@ public class AxisData
     }
     public void SetTarget(Transform targetTransform)
     {
-        Debug.Log("Target set");
         target = targetTransform;
         aiming = true;
     }
@@ -36,7 +35,6 @@ public class AxisData
     {
 		if(aiming)
         {
-            Debug.Log("Aiming");
             this.angle = angle;
 
             rotationTransform.Rotate(rotationMask * (speed * timeDelta * Mathf.Sign(angle)));

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class HeliMissile : MonoBehaviour
 {
     // Missile parameters
-    private float speed = 4f;
+    private float speed = 3f;
 
     // Explosion prefab
     public GameObject _explosion;

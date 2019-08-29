@@ -10,6 +10,9 @@ public class HelicopterController : MonoBehaviour
     public float Xspeed;
     public float Yspeed;
 
+    private float minRotation = -45f;
+    private float maxRotation = 45f;
+
     // Missile prefab
     [Header("Missile parameters")]
     public GameObject missilePrefab;
@@ -60,9 +63,18 @@ public class HelicopterController : MonoBehaviour
         
         // Helicopter x axis movement
         Vector3 tilt = Input.acceleration;
+        Vector3 currentRotation = transform.rotation.eulerAngles;
 
+
+        currentRotation.x = Mathf.Clamp(tilt.x * 20f, minRotation, maxRotation); // Result = between min and max
+        currentRotation.y = 90f;
+        currentRotation.z = 0f;
+
+        // Applies translation
         transform.Translate(0, 0, tilt.x * (Xspeed * Time.deltaTime), Space.Self);
-
+        // Applies rotation
+        transform.localRotation = Quaternion.Euler(currentRotation);
+        
         if(Input.GetKey(KeyCode.D))
         {
             transform.Translate(0, 0, 4f * Time.deltaTime);
@@ -74,33 +86,45 @@ public class HelicopterController : MonoBehaviour
 
         // Helicopter y axis movement
         // If scrollbar handle is above half, the heli goes up and if handle is less than half
+
         if(scrlBar.value > 0.5f) // Up
         {
-            if(scrlBar.value > 0.8f) // To speed up lifting speed
+            if(scrlBar.value >= 0.8f) // To speed up lifting speed
             {
-                transform.Translate(0, Yspeed * (0.5f * Time.deltaTime), 0);
+                if(scrlBar.value > 0.9f)
+                {
+                    transform.Translate(0, Yspeed * (1.2f * Time.deltaTime), 0); // Great increase in lifting speed
+                }
+
+                transform.Translate(0, Yspeed * (0.7f * Time.deltaTime), 0);
             }
 
             transform.Translate(0, Yspeed * Time.deltaTime, 0);
 
-        } else if (scrlBar.value < 0.5f) // Down
+        } else if (scrlBar.value < 0.4f) // Down
         {
-            if(scrlBar.value < 0.2f) 
+            if(scrlBar.value <= 0.2f)  // To speed up lifting speed
             { 
-                transform.Translate(0, Yspeed * (-0.5f * Time.deltaTime), 0);
+                if(scrlBar.value < 0.1f)
+                {
+                    transform.Translate(0, Yspeed * (-1.2f * Time.deltaTime), 0); // Great decrease in lifting speed
+                }
+
+                transform.Translate(0, Yspeed * (-0.7f * Time.deltaTime), 0);
             }
 
             transform.Translate(0, Yspeed * (-Time.deltaTime), 0);
 
-        } else if (scrlBar.value == 0.5f)
+        } else if (scrlBar.value < 0.5f && scrlBar.value > 0.4f)
         {
             transform.Translate(0, 0, 0);
+            
         }
     }
 
     public void InstMissile()
     {
-        if(transform.position.y < 1.2f) // Destroy heli, if missile was launched too close to the ground
+        if(transform.position.y <= 1.8f) // Destroy heli, if missile was launched too close to the ground
         {
             Destroy(gameObject);
         }

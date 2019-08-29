@@ -37,7 +37,7 @@ public class EnemyController : MonoBehaviour
     {
         // Enemy movement
         // For some reason its pos(z,y,x)
-        gameObject.transform.Translate(0, 0, gameObject.transform.position.z * (-Time.deltaTime)); // z is negative so we add -
+        gameObject.transform.Translate(0, 0, 2f * Time.deltaTime); // z is negative so we add -
 
     }
 }
