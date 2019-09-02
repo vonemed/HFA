@@ -7,6 +7,7 @@ public class EnemyController : MonoBehaviour
 {
     // Spawn point
     public GameObject spawner;
+    public float health = 100f; 
 
     private void Start()
     {
@@ -39,5 +40,9 @@ public class EnemyController : MonoBehaviour
         // For some reason its pos(z,y,x)
         gameObject.transform.Translate(0, 0, 2f * Time.deltaTime); // z is negative so we add -
 
+        if(health <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }

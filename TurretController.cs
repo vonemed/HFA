@@ -61,7 +61,7 @@ public class TurretController : MonoBehaviour
                 {
                     missileLaunch();
                     // Missile per 3 seconds
-                    restBetweenShots = 3f / fireRate; // If fire rate is 2, that means turret need to fire 2 missiles per second
+                    restBetweenShots = 4f / fireRate; // If fire rate is 2, that means turret need to fire 2 missiles per second
                 }
 
                 restBetweenShots -= Time.deltaTime;

@@ -16,8 +16,11 @@ public class TurretMissile : MonoBehaviour
         if (other.CompareTag("Player_heli"))
         {
             Destroy(other.gameObject);
-            GameObject tempEff = (GameObject)Instantiate(explosionEff, transform.position, transform.rotation);
-            Destroy(tempEff, 2f); // Destroying explosion effect after 2 seconds.
+            InstAnExplosion();
+
+        } else if (other.CompareTag("Missile"))
+        {
+            Destroy(gameObject);
         }
     }
     public void TargetToFollow(Transform _target)
@@ -60,6 +63,12 @@ public class TurretMissile : MonoBehaviour
         // Wait for 5 seconds, then destroy missile and instantiate an explosion
         yield return new WaitForSeconds(3);
         Destroy(gameObject);
+        GameObject tempEff = (GameObject)Instantiate(explosionEff, transform.position, transform.rotation);
+        Destroy(tempEff, 2f); // Destroying explosion effect after 2 seconds.
+    }
+
+    public void InstAnExplosion()
+    {
         GameObject tempEff = (GameObject)Instantiate(explosionEff, transform.position, transform.rotation);
         Destroy(tempEff, 2f); // Destroying explosion effect after 2 seconds.
     }

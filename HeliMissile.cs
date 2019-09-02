@@ -13,7 +13,7 @@ public class HeliMissile : MonoBehaviour
     private GameObject _explosionInst;
 
     // Target in front of heli
-    private Transform terrainTarget;
+    public Transform terrainTarget;
 
     // UI
     public Text score; // To display score
@@ -27,6 +27,8 @@ public class HeliMissile : MonoBehaviour
         int.TryParse(score.text, out count);
         // Convert int into a string
         SetCountText();
+
+        terrainTarget = GameObject.Find("terrainTarget").transform;
     }
 
     void OnTriggerEnter(Collider other) // On collision
@@ -45,22 +47,24 @@ public class HeliMissile : MonoBehaviour
         {
             count += 400; // Add 400 points
             SetCountText(); // Refresh score on the screen
+
         } 
 
-       _explosionInst = Instantiate(_explosion, transform.position, transform.rotation); // Create a particle explosion
-        Destroy(gameObject); // Destroy missile
-        Destroy(_explosionInst, 2f);
+        FindObjectOfType<AudioManager>().Play("Explosion"); // Play explosion sound
+        ObjectPooler.Instance.SpawnFromPool("Explosion", transform.position, transform.rotation); // Create an explosion
+        StartCoroutine(destroyAfterTime());
+
 
     }
 
-    private void Update()
+    public void Update()
     {
-        if (gameObject != null)
+        if (gameObject.activeSelf == true)
         {
             float movPerFrame = speed * Time.deltaTime; // The speed of missile
             Vector3 dir = terrainTarget.position - transform.position; // The direction of missile
             transform.Translate(dir * movPerFrame, Space.World); // The actual movement
-        }
+        } 
     }
 
     public void SetTarget(Transform _target)
@@ -71,5 +75,13 @@ public class HeliMissile : MonoBehaviour
     void SetCountText()
     {
         score.text = count.ToString(); // Convert int to string
+    }
+
+    IEnumerator destroyAfterTime()
+    {
+        Debug.Log("Waiting");
+        yield return new WaitForSeconds(1.5f);
+        ObjectPooler.Instance.Deactivate("Explosion");
+        gameObject.SetActive(false); // Diactivate the missile
     }
 }

@@ -10,22 +10,26 @@ public class HelicopterController : MonoBehaviour
     public float Xspeed;
     public float Yspeed;
 
-    private float minRotation = -45f;
-    private float maxRotation = 45f;
+    private float minRotation = -50f;
+    private float maxRotation = 50f;
+
 
     // Missile prefab
     [Header("Missile parameters")]
-    public GameObject missilePrefab;
-    private GameObject missileInst;
     public Transform _spawnPos; // Spawn position of the missile 
     public Transform terrainTarget; // The direction towards the ground for missile to follow
 
     public float fireRate = 1f;
     private float restBetweenShots = 0f;
 
+    // Machine Gun parameters
+    [Header("Machine Gun parameters")]
+    public Transform shootingPoint;
+    public float weaponRange = 100f;
+
     // UI
     [Header("UI")]
-    public Button fireButton; // A button to instantiate a missile 
+    public Button missileButton; // A button to instantiate a missile 
     public Scrollbar scrlBar; // A scrollbar to control helicopters height
     public RawImage firstStar; // The image of first star to indicate the completion of first mission.
     public Canvas missionCompleted; // A canvas that will be enabled when player deliver case to the base
@@ -36,8 +40,7 @@ public class HelicopterController : MonoBehaviour
         if(other.CompareTag("Case"))  // If heli is colliding with a case
         {
             Destroy(other.gameObject);
-            Debug.Log("You collected the intel"); // Debug purposes
-
+            FindObjectOfType<AudioManager>().Play("PickUp");
             // Update the mission screen
             firstStar.enabled = true;
 
@@ -53,20 +56,25 @@ public class HelicopterController : MonoBehaviour
 
     private void Start()
     {
-        fireButton.onClick.AddListener(InstMissile);
+        missileButton.onClick.AddListener(InstMissile);
+
+        if (gameObject != null)
+        {
+            FindObjectOfType<AudioManager>().Play("HelicopterNoise");
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         restBetweenShots -= Time.deltaTime; // Cooldown reset
-        
+
         // Helicopter x axis movement
         Vector3 tilt = Input.acceleration;
         Vector3 currentRotation = transform.rotation.eulerAngles;
 
 
-        currentRotation.x = Mathf.Clamp(tilt.x * 20f, minRotation, maxRotation); // Result = between min and max
+        currentRotation.x = Mathf.Clamp(tilt.x * 40f, minRotation, maxRotation); // Result = between min and max
         currentRotation.y = 90f;
         currentRotation.z = 0f;
 
@@ -74,12 +82,13 @@ public class HelicopterController : MonoBehaviour
         transform.Translate(0, 0, tilt.x * (Xspeed * Time.deltaTime), Space.Self);
         // Applies rotation
         transform.localRotation = Quaternion.Euler(currentRotation);
-        
-        if(Input.GetKey(KeyCode.D))
+
+        if (Input.GetKey(KeyCode.D))
         {
             transform.Translate(0, 0, 4f * Time.deltaTime);
 
-        } else if (Input.GetKey(KeyCode.A))
+        }
+        else if (Input.GetKey(KeyCode.A))
         {
             transform.Translate(0, 0, -4f * Time.deltaTime);
         }
@@ -87,13 +96,13 @@ public class HelicopterController : MonoBehaviour
         // Helicopter y axis movement
         // If scrollbar handle is above half, the heli goes up and if handle is less than half
 
-        if(scrlBar.value > 0.5f) // Up
+        if (scrlBar.value > 0.5f) // Up
         {
-            if(scrlBar.value >= 0.8f) // To speed up lifting speed
+            if (scrlBar.value >= 0.8f) // To speed up lifting speed
             {
-                if(scrlBar.value > 0.9f)
+                if (scrlBar.value > 0.9f)
                 {
-                    transform.Translate(0, Yspeed * (1.2f * Time.deltaTime), 0); // Great increase in lifting speed
+                    transform.Translate(0, Yspeed * (3.5f * Time.deltaTime), 0); // Great increase in lifting speed
                 }
 
                 transform.Translate(0, Yspeed * (0.7f * Time.deltaTime), 0);
@@ -101,13 +110,14 @@ public class HelicopterController : MonoBehaviour
 
             transform.Translate(0, Yspeed * Time.deltaTime, 0);
 
-        } else if (scrlBar.value < 0.4f) // Down
+        }
+        else if (scrlBar.value < 0.4f) // Down
         {
-            if(scrlBar.value <= 0.2f)  // To speed up lifting speed
-            { 
-                if(scrlBar.value < 0.1f)
+            if (scrlBar.value <= 0.2f)  // To speed up lifting speed
+            {
+                if (scrlBar.value < 0.1f)
                 {
-                    transform.Translate(0, Yspeed * (-1.2f * Time.deltaTime), 0); // Great decrease in lifting speed
+                    transform.Translate(0, Yspeed * (-3f * Time.deltaTime), 0); // Great decrease in lifting speed
                 }
 
                 transform.Translate(0, Yspeed * (-0.7f * Time.deltaTime), 0);
@@ -115,29 +125,31 @@ public class HelicopterController : MonoBehaviour
 
             transform.Translate(0, Yspeed * (-Time.deltaTime), 0);
 
-        } else if (scrlBar.value < 0.5f && scrlBar.value > 0.4f)
+        }
+        else if (scrlBar.value < 0.5f && scrlBar.value > 0.4f)
         {
             transform.Translate(0, 0, 0);
-            
+
+        }
+
+
+        if (gameObject == null)
+        {
+            FindObjectOfType<AudioManager>().Stop("HelicopterNoise");
         }
     }
 
     public void InstMissile()
     {
-        if(transform.position.y <= 1.8f) // Destroy heli, if missile was launched too close to the ground
+        if (transform.position.y <= 1.8f) // Destroy heli, if missile was launched too close to the ground
         {
+            FindObjectOfType<AudioManager>().Play("Explosion");
             Destroy(gameObject);
         }
+
         if (restBetweenShots <= 0)
         {
-            GameObject missileInst = (GameObject)Instantiate(missilePrefab, _spawnPos.position, _spawnPos.rotation);
-            HeliMissile missile = missileInst.GetComponent<HeliMissile>();
-
-            if (missile != null)
-            {
-                missile.SetTarget(terrainTarget);
-            }
-
+            ObjectPooler.Instance.SpawnFromPool("Missile", _spawnPos.position, _spawnPos.rotation);
             restBetweenShots = 2f / fireRate; // Cooldown set
         }
     }

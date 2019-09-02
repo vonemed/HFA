@@ -46,8 +46,11 @@ public class EnemySpawner : MonoBehaviour {
         // Spawn 4 tanks 
         for(int i = 0; i < 4; i++)
         {
-            // Spawn a tank
+
+            ObjectPooler.Instance.SpawnFromPool("Tank", gameObject.transform.position, gameObject.transform.rotation);
+            /* // Spawn a tank
             GameObject tank = (GameObject)Instantiate(tankPrefab, gameObject.transform.position, gameObject.transform.rotation);
+            tank.tag = "Tank"; */
 
             enemyCount++;
 
@@ -56,7 +59,8 @@ public class EnemySpawner : MonoBehaviour {
         }
 
         // Spawn a truck
-        GameObject truck = (GameObject)Instantiate(truckPrefab, gameObject.transform.position, gameObject.transform.rotation);
+        //GameObject truck = (GameObject)Instantiate(truckPrefab, gameObject.transform.position, gameObject.transform.rotation);
+        ObjectPooler.Instance.SpawnFromPool("Truck", gameObject.transform.position, gameObject.transform.rotation);
         enemyCount++;
     }
 
