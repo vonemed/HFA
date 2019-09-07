@@ -20,8 +20,6 @@ public class EffectDestroyer : MonoBehaviour
             Debug.Log("Times up");
             Destroy(gameObject);
         }
-
-
     }
 
 }
